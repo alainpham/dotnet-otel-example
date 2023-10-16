@@ -13,9 +13,11 @@
   - [List of options accessible via Environment Variables](#list-of-options-accessible-via-environment-variables)
   - [Console mode](#console-mode)
   - [IIS mode](#iis-mode)
+- [add otel prometheus metrics](#add-otel-prometheus-metrics)
 
 # Project description 
 This project is to illustrate how to do autoinstrumentation on a dotnet deployed on IIS.
+
 
 
 # Run the project in console
@@ -128,4 +130,40 @@ edit bin\Release\net6.0\publish\web.config before copying publish folder onto II
     </system.webServer>
   </location>
 </configuration>
+```
+
+to see autto logs add these env vars with value true
+```
+$Env:OTEL_DOTNET_AUTO_LOGS_CONSOLE_EXPORTER_ENABLED="true"
+$Env:OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED="false"
+$Env:OTEL_DOTNET_AUTO_TRACES_CONSOLE_EXPORTER_ENABLED="true"
+
+```
+
+# add otel prometheus metrics
+
+```
+dotnet add package OpenTelemetry.Extensions.Hosting --version 1.5.1
+dotnet add package OpenTelemetry.Instrumentation.AspNetCore --version 1.5.0-beta.1
+dotnet add package OpenTelemetry.Instrumentation.Runtime --version 1.5.1
+dotnet add package OpenTelemetry.Exporter.Console --version 1.5.1
+dotnet add package OpenTelemetry.Exporter.OpenTelemetryProtocol --version 1.5.1
+```
+
+in Program.cs
+
+```c#
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+
+...
+
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(meterBuilder => meterBuilder
+        .AddRuntimeInstrumentation()
+        .AddAspNetCoreInstrumentation()
+        .AddOtlpExporter());
 ```
