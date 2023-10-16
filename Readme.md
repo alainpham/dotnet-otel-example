@@ -7,6 +7,7 @@
 - [Build to deploy on IIS](#build-to-deploy-on-iis)
 - [Install dotnet auto instrumentation](#install-dotnet-auto-instrumentation)
   - [Online method](#online-method)
+  - [Offline method](#offline-method)
   - [FYI : Full list with latest version](#fyi--full-list-with-latest-version)
 - [Run project with instrumentation](#run-project-with-instrumentation)
   - [List of options accessible via Environment Variables](#list-of-options-accessible-via-environment-variables)
@@ -72,8 +73,16 @@ Import-Module $download_path
 Install-OpenTelemetryCore
 
 # Register for IIS (this will cause IIS to restart)
-Register-OpenTelemetryForIIS
+Register-OpenTelemetryForIIS 
 
+```
+
+## Offline method
+
+```
+Import-Module OpenTelemetry.DotNet.Auto.psm1
+
+Install-OpenTelemetryCore -LocalPath "C:\Path\To\opentelemetry-dotnet-instrumentation-windows.zip"" 
 ```
 
 ## FYI : Full list with latest version
@@ -99,7 +108,7 @@ bin\Release\net6.0\MyBookstoreApi.exe
 
 ## IIS mode
 
-edit bin\Release\net6.0\publish\web.config
+edit bin\Release\net6.0\publish\web.config before copying publish folder onto IIS
 
 ```
 <?xml version="1.0" encoding="utf-8"?>
