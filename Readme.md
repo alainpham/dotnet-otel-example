@@ -132,7 +132,7 @@ edit bin\Release\net6.0\publish\web.config before copying publish folder onto II
 </configuration>
 ```
 
-to see autto logs add these env vars with value true
+to see auto logs add these env vars with value true
 ```
 $Env:OTEL_DOTNET_AUTO_LOGS_CONSOLE_EXPORTER_ENABLED="true"
 $Env:OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED="false"

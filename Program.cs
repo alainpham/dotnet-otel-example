@@ -13,6 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
 // OTEL Metrics
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource.AddService(
@@ -26,13 +28,27 @@ builder.Services.AddOpenTelemetry()
     }))
     .WithTracing(tracing => tracing
         .AddAspNetCoreInstrumentation()
-        .AddConsoleExporter()
         .AddOtlpExporter())
     .WithMetrics(metrics => metrics
-        //.AddAspNetCoreInstrumentation()
+        .AddAspNetCoreInstrumentation()
         .AddRuntimeInstrumentation()
-        .AddOtlpExporter());
+        .AddOtlpExporter())    
+    ;
+    
+builder.Logging.AddOpenTelemetry(logging =>
+{
+    logging.IncludeScopes = true;
 
+    var resourceBuilder = ResourceBuilder
+        .CreateDefault()
+        .AddService(builder.Environment.ApplicationName);
+
+    logging.SetResourceBuilder(resourceBuilder)
+
+        // ConsoleExporter is used for demo purpose only.
+        // In production environment, ConsoleExporter should be replaced with other exporters (e.g. OTLP Exporter).
+        .AddConsoleExporter();
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
